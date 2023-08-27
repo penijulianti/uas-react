@@ -8,6 +8,7 @@ import Input from "../Komponen/Input";
 import Btn from "../Komponen/Btn";
 import Icon from "../Komponen/Icon";
 import styled from "styled-components";
+import Regist from "./Regist";
 
 export default function Login(){
     const [login,setLogin] = useState({
@@ -15,19 +16,19 @@ export default function Login(){
         password:"",
     });
     const navigate = useNavigate();
-    const [user,setUser] = useOutletContext();
+    const [akun,setAkun] = useOutletContext();
 
 
-    // if(user){
-    //     return <Navigate to="/" />
-    // }else{
+    if(akun){
+        return <Navigate to="/" />
+    }else{
         return(
  <main  id="login" className="bg-cover flex justify-center items-center h-full w-full">
 <div className="bg-cover flex justify-center items-center h-full w-full">
     <form
           onSubmit={async (e) => {
             e.preventDefault();
-            const response = await fetch("http://localhost:3001/api/akun", {
+            const response = await fetch("http://localhost:3001/api/login", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -37,7 +38,7 @@ export default function Login(){
             if (response.ok) {
               const auth = await response.json();
               localStorage.setItem("token", auth.token);
-              setUser(auth.user);
+              setAkun(auth.akun);
               navigate("/");
             } else {
               const message = await response.text();
@@ -45,12 +46,9 @@ export default function Login(){
             }
           }}>
 <MainContainer className="flex items-center flex-col h-full w-full">
-      <WelcomeText>Welcome</WelcomeText>
+      <WelcomeText>Welcome to</WelcomeText>
+      <div>KZone</div>
       <InputContainer>
-      {/* <Input type="text" placeholder="Name" 
-              required
-              autoFocus
-              onChange={(e) => setLogin({ ...login, email: e.target.value })}/> */}
         <Input 
             type="email" 
             placeholder="Email"
@@ -63,13 +61,12 @@ export default function Login(){
             required
             onChange={(e) => setLogin({ ...login, password: e.target.value })} />
       </InputContainer>
-      <ButtonContainer>
+      <ButtonContainer >
         <Btn type="submit" content="Login" />
       </ButtonContainer>
       <ButtonContainer>
-        <Btn content="Register" />
+        <Btn content="Register"/>
       </ButtonContainer>
-
       <HorizontalRule />
       <ForgotPassword>Forgot Password ?</ForgotPassword>
     </MainContainer>
@@ -78,7 +75,7 @@ export default function Login(){
 </div>
 </main>
         )
-    }
+        }}
     const MainContainer = styled.div`
     background: rgba(255, 255, 255, 0.15);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
@@ -171,6 +168,5 @@ export default function Login(){
   const ForgotPassword = styled.h4`
     cursor: pointer;
   `;
+    
   
-  
-// }

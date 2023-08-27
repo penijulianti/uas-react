@@ -5,11 +5,11 @@ import './index.css'
 import { createBrowserRouter } from 'react-router-dom';
 import Home from './pages/Home.jsx';
 import { RouterProvider } from 'react-router-dom';
-// import Musik from './pages/Musik.jsx';
 import Login from './pages/Login.jsx';
-// import Products from './pages/Products.jsx';
-import Shop from './pages/Shop.jsx';
 import Musik from './pages/Musik.jsx';
+import Barang from './pages/Barang.jsx';
+import Detail from './Komponen/Detail.jsx';
+import Regist from './pages/Regist.jsx';
 
 const router = createBrowserRouter([
   {
@@ -22,11 +22,19 @@ const router = createBrowserRouter([
       },
       {
         path: "/shop",
-        element: <Shop/>,
+        element: <Barang/>,
       },
       {
         path: "/log",
         element: <Login/>,
+      },
+      {
+        path: "/groups/:id",
+        element: <Detail/>,
+      },
+      {
+        path: "/regist",
+        element: <Regist/>,
       },
     ],
   },

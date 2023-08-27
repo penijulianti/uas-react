@@ -37,95 +37,133 @@ const groups=[
 
 const groupsRoute = express.Router();
   // tampilkan semua
-//   groupsRoute.get("/",async (_req,res)=>{
-//     const ang = await client.query("SELECT * FROM anggota");
-//     res.json(ang);
-// })
-// // post semua
-// groupsRoute.post("/all", async (_req, res) => {
-//     for await (const gr of groups) {
-//     await client.query(
-//         `INSERT INTO anggota (nama, agensi, gambar) VALUES ('${gr.nama}','${gr.agensi}', '${gr.img}')`
-//       );
-//     }
-//     res.send("Semua Group berhasil disimpan.");
-//   });
+  groupsRoute.get("/",async (_req,res)=>{
+    const ang = await client.query("SELECT * FROM anggota");
+    res.json(ang.rows);
+})  
+groupsRoute.get("/:id",async (req,res)=>{
+  const ang = await client.query(`SELECT * FROM anggota WHERE id=${req.params.id}`);
+  res.json(ang.rows[0]);
+})
+// post semua
+groupsRoute.post("/all", async (_req, res) => {
+    for await (const gr of groups) {
+    await client.query(
+        `INSERT INTO anggota (nama, agensi, gambar) VALUES ('${gr.nama}','${gr.agensi}', '${gr.img}')`
+      );
+    }
+    res.send("Semua Group berhasil disimpan.");
+  });
 
 // // //   tambah
-// // groupsRoute.post("/", async (_req,res)=>{
-    
-// // })
-// groupsRoute.delete("/", async (req, res) => {
-//     try {
-//        await client.query("DELETE FROM anggota");
+groupsRoute.post("/", async (req,res)=>{
+  try {
+      await client.query(
+        `INSERT INTO anggota(nama, agensi, gambar) VALUES ('${req.body.nama}','${req.body.agensi}','${req.body.img}')`
+      );
+      res.send("Boyband/Girlband berhasil disimpan.");
+    } catch (error) {
+      res.status(500);
+      res.send(error);
+    }
+  });
 
+// edit
+groupsRoute.put("/:id", async (req, res) => {
+  try {
+   await client.query(
+      `UPDATE anggota SET nama = '${req.body.nama}', agensi = '${req.body.agensi}', gambar = '${req.body.img}' WHERE id = '${req.params.id}'`
+    );
+    res.send("Boyband/Girlband berhasil diedit.");
+  } catch (error) {
+    res.status(500);
+    res.send(error);
+  }
+});
+
+// hapus berdasarkan ID
+groupsRoute.delete("/:id", async (req, res) => {
+  try {
+    await client.query(`DELETE  FROM anggota WHERE id = '${req.params.id}' `
+    );
+    res.send("Boyband/Girlband berhasil dihapus.");
+  } catch (error) {
+    res.status(500);
+    res.send(error);
+  }
+});
+
+// hapus
+groupsRoute.delete("/", async (req, res) => {
+    try {
+       await client.query("DELETE FROM anggota");
+      res.send("Boyband/Girlband berhasil dihapus.");
+    } catch (error) {
+      res.status(500);
+      res.send(error);
+    }
+  });
+
+
+
+// tanpa db
+// groupsRoute.get("/", (_req, res) => {
+//     res.json(
+//       groups.map((gr) => {
+//         return { id: gr.id, nama: gr.nama, agensi: gr.agensi, gambar: gr.img };
+//       })
+//     );
+//   });
+  
+//   // tampilkan satu berdasarkan ID
+//   groupsRoute.get("/:id", (req, res) => {
+//     const gr = groups.find((p) => p.id == req.params.id);
+//     if (gr) {
+//       res.json(gr);
+//     } else {
+//       res.status(404);
+//       res.send("Planet tidak ditemukan.");
+//     }
+//   });
+  
+//   // buat
+//   groupsRoute.post("/", (req, res) => {
+//     try {
+//       groups.push({ id: ++id, ...req.body });
+//       res.send("Planet berhasil disimpan.");
+//     } catch (error) {
+//       res.status(500);
+//       res.send(error);
+//     }
+//   });
+  
+//   // edit
+//   groupsRoute.put("/:id", (req, res) => {
+//     try {
+//       groups.forEach((gr) => {
+//         if (gr.id == req.params.id) {
+//           for (const property in req.body) {
+//             gr[property] = req.body[property];
+//           }
+//         }
+//       });
+//       res.send("Planet berhasil disimpan.");
+//     } catch (error) {
+//       res.status(500);
+//       res.send(error);
+//     }
+//   });
+  
+//   // hapus berdasarkan ID
+//   groupsRoute.delete("/:id", (req, res) => {
+//     try {
+//       const index = groups.findIndex((p) => p.id == req.params.id);
+//       planets.splice(index, 1);
 //       res.send("Planet berhasil dihapus.");
 //     } catch (error) {
 //       res.status(500);
 //       res.send(error);
 //     }
 //   });
-
-
-
-// tanpa db
-groupsRoute.get("/", (_req, res) => {
-    res.json(
-      groups.map((gr) => {
-        return { id: gr.id, nama: gr.nama, agensi: gr.agensi, gambar: gr.img };
-      })
-    );
-  });
-  
-  // tampilkan satu berdasarkan ID
-  groupsRoute.get("/:id", (req, res) => {
-    const gr = groups.find((p) => p.id == req.params.id);
-    if (gr) {
-      res.json(gr);
-    } else {
-      res.status(404);
-      res.send("Planet tidak ditemukan.");
-    }
-  });
-  
-  // buat
-  groupsRoute.post("/", (req, res) => {
-    try {
-      groups.push({ id: ++id, ...req.body });
-      res.send("Planet berhasil disimpan.");
-    } catch (error) {
-      res.status(500);
-      res.send(error);
-    }
-  });
-  
-  // edit
-  groupsRoute.put("/:id", (req, res) => {
-    try {
-      groups.forEach((gr) => {
-        if (gr.id == req.params.id) {
-          for (const property in req.body) {
-            gr[property] = req.body[property];
-          }
-        }
-      });
-      res.send("Planet berhasil disimpan.");
-    } catch (error) {
-      res.status(500);
-      res.send(error);
-    }
-  });
-  
-  // hapus berdasarkan ID
-  groupsRoute.delete("/:id", (req, res) => {
-    try {
-      const index = groups.findIndex((p) => p.id == req.params.id);
-      planets.splice(index, 1);
-      res.send("Planet berhasil dihapus.");
-    } catch (error) {
-      res.status(500);
-      res.send(error);
-    }
-  });
   
 export default groupsRoute;

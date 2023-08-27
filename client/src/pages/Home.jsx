@@ -2,33 +2,45 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../utils";
 import {TextField } from "@mui/material";
+import {FaRegHandPointDown} from "react-icons/fa";
+import { useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 // import { TemaContext } from "../App";
 
 export default function Home() {
+  const navigate = useNavigate();
   const [groups, setGroups] = useState([]);
   const [newGroups, setNewGroups] = useState([]);
   // const {tema} = useContext(TemaContext)
 
+  const akun = useOutletContext()[0];
 
-useEffect(() => {
-    fetch(`http://localhost:3001/api/groups`)
-      .then((response) => response.json())
-      .then((groups) => setGroups(groups))
-      .catch((error)=> console.log("disini:",error));
-  },[] );
+  useEffect(() => {
+    api("/groups").then((groups) => setGroups(groups));
+  }, [akun, navigate]);
+
+  if(akun){
   return (
-    <div className="h-full pt-60"> 
-        <div id="gallery" className="mx-3 flex flex-wrap gap-7  h-full md:flex-row ">
+    <div className="h-full pt-16 place-content-center"> 
+    <div className="fixed font-extrabold text-3xl grid grid-col place-items-center mb-8">
+      <h2>Choose your Favorite</h2>
+      <h2><span className="text-blue-300">Boyband </span> or <span className="text-pink-300"> Girlband</span></h2>
+      <p className=""><FaRegHandPointDown/></p>
+      </div>
+        {/* <div id="gallery" className="mx-3 flex flex-wrap gap-7  h-full md:flex-row md:flex-cols-2"> */}
+        <div id="gallery" className="pt-32 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 sm:grid-cols-1
+                    gap-8 max-w-sm mx-auto md:max-w-none md-mx-0">
                 {groups.map((gr) => (
                   <div key={gr.id} className="">
-                  <article id="foto" className="relative left-0 w-96 h-72 rounded-lg overflow-hidden hover:cursor-pointer">
+                  <article id="foto" className="left-0 w-96 h-72 rounded-lg overflow-hidden hover:cursor-pointer">
                     <figure className="">
                       <img src={gr.gambar} alt=""  className="w-full h-72 object-cover rounded-md"/>
                       <figcaption className="flex flex-col">
-                      <h3 id="card_category" className=" text-pink-400 font-bold text-3xl text-center  mt-8">{gr.nama}</h3>
-                      <div className="flex flex-row gap-5 mt-6">
+                      <h3 id="card_category" className=" text-pink-400 font-bold text-5xl text-center  mt-8">{gr.nama}</h3>
+                      <div className="flex flex-row gap-5 mt-3 text-lg">
                       <p id="desc" >{gr.agensi}</p>
-                        <Link to={`/musik/${gr.id}`}>
+                        <Link to={`/groups/${gr.id}`}>
                             <button id="card_button" className="inline-block no-underline py-1 px-2 rounded bg-purple-400 text-pink-800">Detail</button>
                          </Link>
                          </div>
@@ -97,4 +109,7 @@ useEffect(() => {
         </div>
      </div>
   );
+        }else{
+          return <Navigate to="/log"/>
+        }
 }
