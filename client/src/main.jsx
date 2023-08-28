@@ -10,6 +10,8 @@ import Musik from './pages/Musik.jsx';
 import Barang from './pages/Barang.jsx';
 import Detail from './Komponen/Detail.jsx';
 import Regist from './pages/Regist.jsx';
+import EditPrd from './pages/EditPrd.jsx';
+import EditGroup from './pages/EditGroup.jsx';
 
 const router = createBrowserRouter([
   {
@@ -29,12 +31,25 @@ const router = createBrowserRouter([
         element: <Login/>,
       },
       {
-        path: "/groups/:id",
+        path: "/musik/:id",
         element: <Detail/>,
       },
       {
+        path: "/groups/:id",
+        element: <Detail/>,
+      },
+    
+      {
         path: "/regist",
         element: <Regist/>,
+      },
+      {
+        path: "/groups/edit/:id",
+        element: <EditGroup/>,
+      },
+      {
+        path: "/product/edit/:id",
+        element: <EditPrd/>,
       },
     ],
   },

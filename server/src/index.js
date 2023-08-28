@@ -7,8 +7,24 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import productRouter from "./router/product.js";
 import bcrypt from "bcryptjs";
+import multer from "multer";
 import cookieParser from "cookie-parser";
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./public/uploads");
+  },
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      path.parse(file.originalname).name +
+        "-" +
+        Date.now() +
+        path.extname(file.originalname)
+    );
+  },
+});
 
+const upload = multer({ storage: storage });
 dotenv.config();
 const mem = express();
 mem.use(cors({origin:"http://localhost:5173"}))

@@ -1,5 +1,16 @@
 import express from "express";
 import { client } from "../db.js";
+import multer from "multer";
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'images/')
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname)
+  },
+})  
+const upload = multer({ storage:storage  });
+
 
 const groups=[
     {
@@ -32,7 +43,34 @@ const groups=[
         agensi:"Pledis Entertainment",
         img:"https://s3.cosmopolitan.co.id/yuk-dengar-10-lagu-grup-seventeen-yang-siap-bikin-kamu-bersemangat_64_20211026175136fcSKoY.jpg"
     },
-    
+    {
+      id:6,
+      nama:"AESPA",
+      agensi:"SM Entertainment",
+      img:"https://portalpopline.com.br/wp-content/uploads/2022/04/aespa-800x496.jpg"
+    },
+    {
+      id:7,
+      nama:"EXO",
+      agensi:"SM Entertainment",
+      img:"https://www.daradaily.com/module/ckfinder/userfiles/images/EXO%20(1)(4).jpg"
+    },
+    {
+      id:8,
+      nama:"NCT",
+      agensi:"SM Entertainment",
+      img:"https://cms.disway.id/uploads/2efc97b7a7746d0504d7768328f5f234.jpg"
+    },{
+      id:9,
+      nama:"TWICE",
+      agensi:"JYP Entertainment",
+      img:"https://assets.ayobandung.com/crop/0x0:0x0/750x500/webp/photo/2023/04/27/20230427_115409-4198408317.jpg"
+    },{
+      id:10,
+      nama:"WINNER",
+      agensi:"YG Entertainment",
+      img:"https://cdn.antaranews.com/cache/1200x800/2021/08/20/E8-jNDpVEAU3hye.jpeg"
+    },
 ]
 
 const groupsRoute = express.Router();
@@ -55,7 +93,7 @@ groupsRoute.post("/all", async (_req, res) => {
     res.send("Semua Group berhasil disimpan.");
   });
 
-// // //   tambah
+// tambah
 groupsRoute.post("/", async (req,res)=>{
   try {
       await client.query(
@@ -67,9 +105,18 @@ groupsRoute.post("/", async (req,res)=>{
       res.send(error);
     }
   });
-
+  groupsRoute.post("/upload", upload.single("img"),async (req,res)=>{
+    try{
+      await client.query(`INSERT INTO anggota (name, agensi , gambar ) VALUES ('${req.body.nama}', '${req.body.agensi}', '${req.file.filename}')`);
+      res.status(201).json({message:"berhasil disimpan"});
+    }catch(error){
+      res.send("salahhh");
+      console.log("error disini bang messi : ", error);
+    }
+  })
+  
 // edit
-groupsRoute.put("/:id", async (req, res) => {
+groupsRoute.put("/edit/:id", async (req, res) => {
   try {
    await client.query(
       `UPDATE anggota SET nama = '${req.body.nama}', agensi = '${req.body.agensi}', gambar = '${req.body.img}' WHERE id = '${req.params.id}'`
@@ -82,7 +129,7 @@ groupsRoute.put("/:id", async (req, res) => {
 });
 
 // hapus berdasarkan ID
-groupsRoute.delete("/:id", async (req, res) => {
+groupsRoute.delete("/del/:id", async (req, res) => {
   try {
     await client.query(`DELETE  FROM anggota WHERE id = '${req.params.id}' `
     );
@@ -95,14 +142,14 @@ groupsRoute.delete("/:id", async (req, res) => {
 
 // hapus
 groupsRoute.delete("/", async (req, res) => {
-    try {
-       await client.query("DELETE FROM anggota");
-      res.send("Boyband/Girlband berhasil dihapus.");
-    } catch (error) {
-      res.status(500);
-      res.send(error);
-    }
-  });
+  try {
+     await client.query("DELETE FROM anggota");
+    res.send("Semua Group berhasil dihapus.");
+  } catch (error) {
+    res.status(500);
+    res.send(error);
+  }
+});
 
 
 
