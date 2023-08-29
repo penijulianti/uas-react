@@ -8,18 +8,20 @@ import {BiCartAdd,BiEdit} from "react-icons/bi";
 import {MdClose,MdOutlineRemoveShoppingCart} from "react-icons/md";
 import {RiDeleteBin5Line} from "react-icons/ri";
 import { styled } from "styled-components";
-import { TextField } from "@mui/material";
 import { api } from "../utils";
 import { useNavigate } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { TextField } from "@mui/material";
 
 export default function Barang(){
     const [product,setProd] = useState([]);
+    const [newProduct,setNewProd] = useState([]);
     const navigate = useNavigate();
     const {id} = useParams();
     const [cart, setCart] = useState([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
-    // const [idSequence, setIdSequence] = useState(product.length);
+    const [showAdd, setShowAdd]= useState(false);
     const [keyword, setKeyword] = useState("");
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(Infinity);
@@ -31,6 +33,13 @@ export default function Barang(){
     const akun = useOutletContext()[0];
 
 
+    
+
+    useEffect(() => {
+        api("/product").then((product) => setProd(product));
+      }, [akun, navigate]);
+
+      if(akun){ 
     const filterPrd = product
     .sort((a, b) => {
       if (sortOrder === "asc") {
@@ -46,16 +55,10 @@ export default function Barang(){
         product.harga <= maxPrice &&
         (category === "Semua" || product.kategori == category)
     );
-
-    useEffect(() => {
-        api("/product").then((product) => setProd(product));
-      }, [akun, navigate]);
-
-      if(akun){ 
     return(
        <div className=" pt-5"> 
         <header className="flex items-center justify-between bg-rose-200 rounded-2xl gap-6 px-5 py-1">
-        <TomatoButton >Tambah Barang</TomatoButton>
+        <TomatoButton onClick={()=> setShowAdd(true)} >Tambah Barang</TomatoButton>
             <label className="flex flex-col gap-2 text-sm">
           Cari:
           <input
@@ -90,9 +93,9 @@ export default function Barang(){
             onChange={(e) => setCategory(e.target.value)}
           >
             <option>Semua</option>
+            <option>Lightstick</option>
             <option>Ring</option>
             <option>Gel Pen</option>
-            <option>T-Shirt</option>
           </select>
         </label>
         <section>
@@ -190,6 +193,7 @@ export default function Barang(){
                 maximumFractionDigits: 0,
               })}
           </div>
+          <TomatoButton>Checkout</TomatoButton>
         </div>
       )} 
     {/* </div> */}
@@ -252,8 +256,12 @@ export default function Barang(){
                             maximumFractionDigits: 0,
                     })}
                         </p>
+                        <div className="flex flex-row gap-5">
                         <Link to={`/product/edit/${prd.id}`}>
-                        <BiEdit/>
+                        <button id="card_button" 
+                            className="inline-block no-underline py-1 px-2 rounded bg-purple-400 text-pink-800"
+                        ><BiEdit size={18}/> </button>
+                        
                         </Link>
                         <button id="card_button" 
                             className="inline-block no-underline py-1 px-2 rounded bg-purple-400 text-pink-800"
@@ -267,7 +275,8 @@ export default function Barang(){
                                   alert(message);
                                 }
                               }}
-                            ><RiDeleteBin5Line/></button>
+                            ><RiDeleteBin5Line size={13}/></button>
+                            </div>
                         </div>
                      </div>
                      </div>
@@ -292,14 +301,14 @@ export default function Barang(){
         {filterPrd
           .filter((_product, i) => i % productsPerPage === 0)
           .map((_product, i) => (
-            <button
+            <Button
               key={i}
               className="page-number"
               onClick={() => setPage(i + 1)}
               disabled={i + 1 === page}
             >
               {i + 1}
-            </button>
+            </Button>
           ))}
         <Button
           onClick={() => setPage(page + 1)}
@@ -311,9 +320,84 @@ export default function Barang(){
         </Button>
       </footer>
 
+       {showAdd && ( <form
+          className="dialog"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            const message = await api(`/product/`, "POST", newProduct);
+            alert(message);
+            <Navigate to="/"/>
+          }}
+        >
+            <button 
+             onClick={()=>setShowAdd(false)}
+            className="flex justify-center items-center w-10 h-10 bg-pink-200 rounded-2xl" >
+            <MdClose />
+            </button>
+          <h1  className="text-center text-xl">Tambah Produk</h1>
+            <TextField label="Nama" helperText="Masukkan Nama Boyband/Girlband" 
+              variant="outlined"
+              className="w-full"
+              type="text"
+              value={newProduct.nama}
+              onChange={(e) =>
+                setNewProd({ ...newProduct, nama: e.target.value })
+              }
+             
+            />
+             <TextField
+             id="outlined-multiline-static"
+             helperText="Dilarang Masukkan Link Foto dengan format .png"
+             label="Link Foto"
+             multiline
+             rows={4}
+             variant="standard"
+             type="text"
+             value={newProduct.img}
+          onChange={(e) =>
+            setNewProd({...newProduct,gbr: e.target.value,
+            })
+          }
+          required
+        />                                          
+         <TextField label="Harga"
+        type="text"
+        value={newProduct.harga}
+        onChange={(e) =>
+          setNewProd({...newProduct, harga: e.target.value
+          })
+        }
+      />
+       <TextField label="Band"
+        type="text"
+        value={newProduct.kode}
+        onChange={(e) =>
+          setNewProd({...newProduct, band: e.target.value
+          })
+        }
+      />
+       <TextField label="Kategori"
+        type="text"
+        value={newProduct.kode}
+        onChange={(e) =>
+          setNewProd({...newProduct, kategori: e.target.value
+          })
+        }
+      />
+
+        
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <TomatoButton onClick={()=>setShowAdd(false)}>
+              Batal
+            </TomatoButton>
+            <TomatoButton type="submit">Simpan</TomatoButton>
+          </div>       
+          </form>
+        )} 
+
         </div>
     )   }else{
-        return <navigate to="/log"/>
+        return <Navigate to="/log"/>
       }
 }
 const Button = styled.button`
@@ -325,8 +409,7 @@ const Button = styled.button`
   border-radius: 3px;
 `;
 
-// A new component based on Button, but with some override styles
 const TomatoButton = styled(Button)`
-  color: tomato;
-  border-color: tomato;
+  color: rose;
+  border-color: rose;
 `;

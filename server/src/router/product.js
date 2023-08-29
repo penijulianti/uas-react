@@ -121,7 +121,7 @@ const product=[
   gbr:"https://pbs.twimg.com/media/EwmUinvU8AgyrST.png",
   harga:"50000",
   kategori:" Totebag"
-}
+},
 ]
 
 let id=product.length;
@@ -137,7 +137,7 @@ const productRouter=express.Router();
 productRouter.post("/all", async (_req, res) => {
     for await (const prd of product) {
     await client.query(
-        `INSERT INTO barang (nama,band,gambar,harga,kategori) VALUES ('${prd.nama}','${prd.band}', '${prd.gbr}','${prd.harga}','${prd.kategori}')`
+        `INSERT INTO barang (nama,band,gambar,harga,kategori) VALUES ('${prd.nama}','${prd.band}', '${prd.gbr}',${prd.harga},'${prd.kategori}')`
       );
     }
     res.send("Semua barang berhasil disimpan.");
@@ -153,7 +153,7 @@ productRouter.post("/", async (req,res)=>{
   try {
       await client.query(
         `INSERT INTO barang (nama, band,gambar,harga,kategori) VALUES ('${req.body.nama}','${req.body.band}', '${req.body.gbr}','${req.body.harga}','${req.body.kategori}')`
-);
+      );
       res.send("Barang berhasil disimpan.");
     } catch (error) {
       res.status(500);

@@ -1,54 +1,110 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../utils";
-import {TextField } from "@mui/material";
 import {FaRegHandPointDown} from "react-icons/fa";
 import {BiEdit} from "react-icons/bi";
 import {RiDeleteBin5Line} from "react-icons/ri";
 import { useOutletContext } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Navigate } from "react-router-dom";
+import {MdClose} from "react-icons/md"
 import { styled } from "styled-components";
-import { useParams } from "react-router-dom";
-// import { TemaContext } from "../App";
 
 export default function Home() {
   const navigate = useNavigate();
-  // const {id} = useParams();
   const [groups, setGroups] = useState([]);
-  const [newGroups, setNewGroups] = useState([]);
+  const [showAdd, setShowAdd]= useState(false);
   const [page, setPage] = useState(1);
   const [productsPerPage, setProductsPerPage] = useState(10);
+  const [keyword, setKeyword] = useState("");
 
-  // const [idSequence, setIdSequence] = useState(groups.length);
 
+  const [form, setForm] = useState({
+    file: null,
+    nama: "",
+    agensi: "",
+    message: "",
+  });
+  const handleChange = (e) => {
+    setForm({ ...form, file: e.target.files[0] });
+  };
+  const Submit = async () => {
 
-  // const {tema} = useContext(TemaContext)
+    const { file, nama, agensi } = form;
+
+    const formDataObj = new FormData();
+    formDataObj.append("img", file);
+    formDataObj.append("nama", nama);
+    formDataObj.append("agensi", agensi);
+    console.log(formDataObj.file);
+
+    try {
+      const response = await fetch("http://localhost:3001/api/groups/upload", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: formDataObj,
+      });
+
+      if (response.status === 201) {
+        setForm({ ...form, message: "Image uploaded successfully." });
+      } else {
+        setForm({ ...form, message: "Error uploading image." });
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      setForm({ ...form, message: "An error occurred." });
+    }
+  };
 
   const akun = useOutletContext()[0];
 
   useEffect(() => {
     api("/groups").then((groups) => setGroups(groups));
   }, [akun, navigate]);
-  const handleFileChange = (e) => {
-    if (e.target.files.length > 0) {
-      const selectedFile = e.target.files[0];
-      setNewGroups({ ...newGroups, img: selectedFile});
-    }
-};
 
   if(akun){
+  const filterPrd = groups
+    .filter(
+      (groups) =>
+      groups.nama.toLowerCase().includes(keyword)
+    );
+    
   return (
+  <>
+  
+    <div className="w-full fixed font-extrabold text-3xl flex flex-row justify-center gap-x-96 mb-8 bg-gray-800">
+    <div className="grid grid-col place-items-center ">
+    <header className="flex items-center justify-between bg-rose-200 rounded-2xl gap-6 px-5 py-1">
+            <label className="flex flex-col gap-2 text-sm">
+          Cari:
+          <input
+            type="text"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+          />
+        </label>
+    <h2>Choose your Favorite</h2>
+    <h2><span className="text-blue-300">Boyband </span> or <span className="text-pink-300"> Girlband</span></h2>
+    <p className=""><FaRegHandPointDown/></p>
+    </header>
+
+    <div>
+    <button onClick={()=> setShowAdd(true)} className="inline-block no-underline py-1 px-2 rounded bg-purple-400 text-pink-800 items-center justify-center">Tambah</button>
+    </div>
+    </div>
+    </div>
     <div className="h-full pt-16 place-content-center"> 
-    <div className="fixed font-extrabold text-3xl grid grid-col place-items-center mb-8">
-      <h2>Choose your Favorite</h2>
-      <h2><span className="text-blue-300">Boyband </span> or <span className="text-pink-300"> Girlband</span></h2>
-      <p className=""><FaRegHandPointDown/></p>
-      </div>
-        {/* <div id="gallery" className="mx-3 flex flex-wrap gap-7  h-full md:flex-row md:flex-cols-2"> */}
         <div id="gallery" className="pt-32 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 sm:grid-cols-1
                     gap-8 max-w-sm mx-auto md:max-w-none md-mx-0">
-                {groups.map((gr) => (
+                {filterPrd.length > 0
+          ? filterPrd
+              .filter(
+                (_product, i) =>
+                  i >= productsPerPage * page - productsPerPage &&
+                  i < productsPerPage * page
+              ).map((gr) => (
                   <div key={gr.id} className="">
                   <article id="foto" className="left-0 w-96 h-72 rounded-lg overflow-hidden hover:cursor-pointer">
                     <figure className="">
@@ -76,24 +132,39 @@ export default function Home() {
                               }
                             }}
                         ><RiDeleteBin5Line/></button>
-                         {/* </Link> */}
-                         </div>
+                        </div>
                       </figcaption>
                     </figure>
                   </article>
                   </div>
-                ))}
- {/* {filterPrd
-          .filter((_product, i) => i % productsPerPage === 0)
-          .map((_product, i) => (
-            <button
+                ))
+                :"Tidak Ditemukan"}
+
+
+</div>
+<footer>
+        <label>
+          Produk per halaman:
+          <input
+            type="number"
+            value={productsPerPage}
+            onChange={(e) => setProductsPerPage(parseInt(e.target.value))}
+          />
+        </label>
+        <Button onClick={() => setPage(page - 1)} disabled={page === 1}>
+          Sebelumnya
+        </Button>
+        {filterPrd
+          .filter((_groups, i) => i % productsPerPage === 0)
+          .map((_groups, i) => (
+            <Button
               key={i}
               className="page-number"
               onClick={() => setPage(i + 1)}
               disabled={i + 1 === page}
             >
               {i + 1}
-            </button>
+            </Button>
           ))}
         <Button
           onClick={() => setPage(page + 1)}
@@ -103,84 +174,41 @@ export default function Home() {
         >
           Berikutnya
         </Button>
-      </footer> */}
-
-</div>
+      </footer>
 
             <div className="flex  pt-44 justify-center">
-            <form
-              className="sm-auto bg-gray-100 p-8 rounded-3xl w-96 flex flex-col gap-4"
-              onSubmit={async (e) => {
-                e.preventDefault();
-                const formData = new FormData();
-                formData.append("nama", newGroups.nama)
-                formData.append("agensi", newGroups.agensi)
-                formData.append("gambar", newGroups.img)
-                const token = localStorage.getItem("token");
-                const response = await fetch(
-                  "http://localhost:3001/api/groups/upload",{
-                    method:"POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                      Authorization: `Bearer ${token}`,
-                    },
-                    body:formData,
-                  }
-                );
-                await response.json();
-                const anggotaResponse = api("/groups")
-                const anggotaData = await anggotaResponse.json();
-                setGroups(anggotaData);
-                setNewGroups({
-                  nama:"",
-                  agensi:"",
-                  img:null,
-                })
-              }}
+              {showAdd && ( <form
+              onSubmit={Submit}
+              className="dialog"
             > 
+             <button 
+             onClick={()=>setShowAdd(false)}
+            className="flex justify-center items-center w-10 h-10 bg-pink-200 rounded-2xl" >
+            <MdClose />
+            </button>
           <h1  className="text-center text-xl">Tambah Boyband/Girlband</h1>
-            <TextField label="Nama" helperText="Masukkan Nama Boyband/Girlband" 
-              type="text"
-              variant="outlined"
-              value={newGroups.nama}
-              className="w-full"
-              required
-              autoFocus
-              onChange={(e) =>
-                setNewGroups({ ...newGroups, nama: e.target.value })
-              }
-             
-            />
-            <TextField label="Agensi" helperText="Masukkan Agensinya"
-              type="text"
-              variant="outlined"
-              value={newGroups.agensi}
-              className="w-full"
-              required
-              onChange={(e) =>
-                setNewGroups({...newGroups,agensi: e.target.value})
-              }
-
-            />
-             <TextField
-          id="outlined-multiline-static"
-          // helperText="Masukkan Link Foto dengan format .jpg"
-          // label="Link Foto"
-          // multiline
-          type="file"
-          name="img"
-          // rows={4}
-          // variant="standard"
-          value={newGroups.gambar}
-          onClick={handleFileChange }
-          required
+          <input
+          type="text"
+          placeholder="Nama"
+          value={form.nama}
+          onChange={(e) => setForm({ ...form, nama: e.target.value })}
         />
+            <input
+          type="text"
+          placeholder="Agensi"
+          value={form.agensi}
+          onChange={(e) => setForm({ ...form, agensi: e.target.value })}
+        />
+        <input type="file" accept="image/*" onChange={handleChange} />
+          <button onClick={()=>setShowAdd(false)}>Batal</button>
           <button type="submit">Simpan</button>
         </form>
+        )}
+           
         </div>
 
      </div>
-     
+     </>
   );
   
         }else{
@@ -195,10 +223,4 @@ const Button = styled.button`
   padding: 0.25em 1em;
   border: 2px solid #BF4F74;
   border-radius: 3px;
-`;
-
-// A new component based on Button, but with some override styles
-const TomatoButton = styled(Button)`
-  color: tomato;
-  border-color: tomato;
 `;

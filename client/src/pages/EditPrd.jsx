@@ -47,18 +47,17 @@ if(akun){
             />
              <TextField
           id="outlined-multiline-static"
-          helperText="Masukkan Link Foto dengan format .jpg"
+          helperText="Dilarang Masukkan Link Foto dengan format .png"
           label="Link Foto"
           multiline
           rows={4}
           variant="standard"
           type="text"
-          value={editProduct.gambar}
+          placeholder={editProduct.gambar}
           onChange={(e) =>
-            seteditProduct({...editProduct,gambar: e.target.value,
+            seteditProduct({...editProduct,gbr: e.target.value,
             })
           }
-          required
         />                                          
          <TextField label="Harga"
         type="text"

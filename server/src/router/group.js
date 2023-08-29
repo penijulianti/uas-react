@@ -1,14 +1,31 @@
 import express from "express";
 import { client } from "../db.js";
+import path from "path";
 import multer from "multer";
+import bodyParser from "body-parser"
+export const app = express();
+const router = express.Router();
+
+
+app.use(bodyParser.json({ limit: "10mb" }));
+app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
+app.use(express.json());
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'images/')
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.originalname)
-  },
-})  
+    destination: function (req, file, cb) {
+      cb(null, "./src/asets/public/img");
+    },
+    filename: function (req, file, cb) {
+      cb(
+        null,
+        path.parse(file.originalname).name +
+          "-" +
+          Date.now() +
+          path.extname(file.originalname)
+      );
+    },
+  });
+  
+
 const upload = multer({ storage:storage  });
 
 
@@ -107,13 +124,14 @@ groupsRoute.post("/", async (req,res)=>{
   });
   groupsRoute.post("/upload", upload.single("img"),async (req,res)=>{
     try{
-      await client.query(`INSERT INTO anggota (name, agensi , gambar ) VALUES ('${req.body.nama}', '${req.body.agensi}', '${req.file.filename}')`);
-      res.status(201).json({message:"berhasil disimpan"});
+      await client.query(`INSERT INTO anggota (nama,agensi,gambar) VALUES ('${req.body.nama}', '${req.body.agensi}', '${req.file.filename}')`);
+      res.status(201).send({message:"berhasil disimpan"});
     }catch(error){
       res.send("salahhh");
       console.log("error disini bang messi : ", error);
     }
   })
+
   
 // edit
 groupsRoute.put("/edit/:id", async (req, res) => {

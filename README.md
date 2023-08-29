@@ -9,22 +9,16 @@ Aplikasi ini dibuat ketika saya masih dalam masa pembelajaran
 
 # Fitur
 
-## Admin
-
 - Kelola Home (Daftar Boyband/Girlband)
-- Kelola Audio
+- Dengar Audio
 - Kelola _Shop_ _Merchandise_
-
-## User
-
-- Melihat Home
-- Mendengarkan audio
-- Melihat bagian _Shop_
 
 ## ERD
 
+![ERD](/ERD.png)
+
 ## Tech Stack
 
-- Frontend: React
+- Frontend: React,Style-component
 - Backend: Express
 - Basis Data: MariaDB

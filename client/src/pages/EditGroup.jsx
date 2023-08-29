@@ -6,6 +6,7 @@ import { Navigate } from "react-router-dom";
 import { api } from "../utils";
 import { useOutletContext } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 
 export default function EditGroup(){
@@ -32,10 +33,8 @@ export default function EditGroup(){
                     const message = await api(`/groups/edit/${editGroup.id}`, "PUT", editGroup);
                     alert(message);
                     <Navigate to="/"/>
-        
                   }}
                 >
-                  {/* <h1>{editGroup.id ? "Edit" : "Buat"} Produk</h1> */}
                   <h1  className="text-center text-xl">Edit Boyband/Girlband</h1>
                     <TextField label="Nama" helperText="Masukkan Nama Boyband/Girlband" 
                       variant="outlined"
@@ -62,24 +61,20 @@ export default function EditGroup(){
                   label="Link Foto"
                   multiline
                   rows={4}
-                  defaultValue="Masukkan Link Foto"
                   variant="standard"
                   type="text"
-                  value={editGroup.gambar}
+                  value={editGroup.img}
                   onChange={(e) =>
-                    setEditGroup({...editGroup,gambar: e.target.value,
+                    setEditGroup({...editGroup,img: e.target.value,
                     })
                   }
                   required
                 />
                 
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    {/* <TomatoButton
-                      type="reset"
-                      variant="tonal"
-                    >
-                      Batal
-                    </TomatoButton> */}
+                    <Link to={`/`}>
+                    <TomatoButton>Batal</TomatoButton>                    
+                    </Link>
                     <TomatoButton type="submit">Simpan</TomatoButton>
                   </div>       
                   </form>

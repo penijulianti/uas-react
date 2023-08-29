@@ -8,7 +8,7 @@ import Input from "../Komponen/Input";
 import Btn from "../Komponen/Btn";
 import Icon from "../Komponen/Icon";
 import styled from "styled-components";
-import Regist from "./Regist";
+import { Link } from "react-router-dom";
 
 export default function Login(){
     const [login,setLogin] = useState({
@@ -23,7 +23,7 @@ export default function Login(){
         return <Navigate to="/" />
     }else{
         return(
- <main  id="login" className="bg-cover flex justify-center items-center h-full w-full">
+ <main  id="login" className="py-32 pl-0 bg-cover flex justify-center items-center h-full w-full">
 <div className="bg-cover flex justify-center items-center h-full w-full">
     <form
           onSubmit={async (e) => {
@@ -65,10 +65,12 @@ export default function Login(){
         <Btn type="submit" content="Login" />
       </ButtonContainer>
       <ButtonContainer>
-        <Btn content="Register"/>
-      </ButtonContainer>
+        <Link to={"/regist"}>
+        <Btn content="Regist"/>
+        </Link>
+
+        </ButtonContainer>
       <HorizontalRule />
-      <ForgotPassword>Forgot Password ?</ForgotPassword>
     </MainContainer>
 
     </form>
@@ -142,11 +144,7 @@ export default function Login(){
     align-items: center;
     justify-content: center;
   `;
-  
-//   const LoginWith = styled.h5`
-//     cursor: pointer;
-//   `;
-  
+
   const HorizontalRule = styled.hr`
     width: 90%;
     height: 0.3rem;
@@ -157,16 +155,6 @@ export default function Login(){
     margin: 1.5rem 0 1rem 0;
     backdrop-filter: blur(25px);
   `;
-  
-  const IconsContainer = styled.div`
-    display: flex;
-    justify-content: space-evenly;
-    margin: 2rem 0 3rem 0;
-    width: 80%;
-  `;
-  
-  const ForgotPassword = styled.h4`
-    cursor: pointer;
-  `;
+
     
   

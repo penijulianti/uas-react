@@ -6,7 +6,6 @@ import { createBrowserRouter } from 'react-router-dom';
 import Home from './pages/Home.jsx';
 import { RouterProvider } from 'react-router-dom';
 import Login from './pages/Login.jsx';
-import Musik from './pages/Musik.jsx';
 import Barang from './pages/Barang.jsx';
 import Detail from './Komponen/Detail.jsx';
 import Regist from './pages/Regist.jsx';

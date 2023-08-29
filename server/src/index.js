@@ -42,16 +42,22 @@ router.get("/akun", async (req, res)=>{
   }
 })
 // register
-router.post("/daftar", async (req, res) => {
-  const salt = await bcrypt.genSalt(10);
-  const pass = await bcrypt.hash(req.body.password,salt);
-try{
-  await client.query(`INSERT INTO akun (nama,email,password) VALUES ('${req.body.nama}','${req.body.email}','${pass}')`);
-  res.json({message:"Berhasil tambahkan Akun"});
-}catch(error){
-  res.send("error disini, " ,error);
-}
-  });
+router.post('/registrasi', async (req, res) => {
+  try {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+
+    const query = 'INSERT INTO akun (nama, email, password) VALUES ($1, $2, $3)';
+    const values = [req.body.nama, req.body.email, hashedPassword];
+    
+    await client.query(query, values);
+
+    res.json({ message: 'Pendaftaran berhasil' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Terjadi kesalahan saat mendaftarkan akun');
+  }
+});
 // login
 router.post("/login", async (req,res)=>{
   try{

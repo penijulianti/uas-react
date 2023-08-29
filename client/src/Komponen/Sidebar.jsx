@@ -73,27 +73,31 @@ import React, { createContext, useContext, useState } from "react";
 import {CiMenuKebab} from "react-icons/ci"
 import { TbHomeHeart,TbUserHeart } from "react-icons/tb";
 import{GiMusicSpell} from "react-icons/gi"
-import { RiSettings4Line } from "react-icons/ri";
-import {FiShoppingBag } from "react-icons/fi";
+import { BiLogOutCircle } from "react-icons/bi";
 import {AiTwotoneShop} from "react-icons/ai"
 import { Link } from "react-router-dom";
-import { TemaContext } from "../App";
 import Tema from "./Tema";
 
 export const SidebarContext = createContext();
 
 export default function Sidebar(){
-    const {tema} = useContext(TemaContext);
-
 
   const menus = [
     { name: "Login", link: "/log", icon:TbUserHeart},
     { name: "Home", link: "/", icon: TbHomeHeart},
     { name: "Shop", link: "/shop", icon: AiTwotoneShop},
-    { name: "Cart", link: "/cart", icon: FiShoppingBag },
-    { name: "Setting", link: "/", icon: RiSettings4Line },
   ];
   const [open, setOpen] = useState(false);
+
+  const handleLogout=()=>{
+    if(localStorage.getItem("token")){
+    alert("Anda berhasil logout");
+    localStorage.removeItem("token")
+    window.location.reload();
+  }    else{
+    alert("Anda sudah logout. Silahkan login terlebih dahulu!");
+    }
+}
   return (
     <div className="text-pink-300 ">
     <section className="z-50 fixed">
@@ -103,19 +107,24 @@ export default function Sidebar(){
         } duration-500 px-4`}
       >
         <div
-      className={`py-3 flex justify-end sm:block ${
+      className={`py-3 sm:block ${
         "hidden" ? "hidden" : "block"
       }`}
     >
             <GiMusicSpell
             size={50} 
             className="cursor-pointer "/>KZone
-        <div className="py-3 flex justify-end">
-        
+        <div className="py-3 px-3 flex flex-col gap-3">
           <CiMenuKebab
             size={26}
             className="cursor-pointer"
             onClick={() => setOpen(!open)}
+          />
+          
+          <BiLogOutCircle
+            size={26}
+            className="cursor-pointer"
+            onClick={handleLogout}
           />
         </div>
         </div>
@@ -148,8 +157,8 @@ export default function Sidebar(){
               </h2>
             </Link>
           ))}
+          <Tema/>
         </div>
-        <Tema/>
       </div>
     </section>
     </div>
