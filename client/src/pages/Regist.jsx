@@ -41,29 +41,32 @@ export default function Regist() {
   };
 
   return (
-    <div>
-<main id="login" className="bg-cover flex flex-col justify-center items-center h-full w-full">
+ <main  id="login" className="py-32 pl-0 bg-cover flex flex-col justify-center items-center h-full w-full font-extrabold text-3xl">
+ 
       <h2 className='text-white'>Create Your Account</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
+      <form onSubmit={handleSubmit}
+      className=''>
+              <div className='flex flex-col pt-9'>
+
+        <div className='mt-9'>
           <label>Nama:</label>
           <input type="text" name="nama" value={formData.nama} onChange={handleChange} />
         </div>
-        <div>
+        <div className='mt-9'>
           <label>Email:</label>
           <input type="email" name="email" value={formData.email} onChange={handleChange} />
         </div>
-        <div>
+        <div className='mt-9'>
           <label>Password:</label>
           <input type="password" name="password" value={formData.password} onChange={handleChange} />
         </div>
         <button type="submit">Daftar</button>
-        <Link to={"/log"}>Kembali</Link>
+        <button ><Link to={"/log"}>Kembali</Link></button>
 
+        
+        </div>
       </form>
-
-      </main>
       
-    </div>
-  );
+      </main>
+        );
 }
