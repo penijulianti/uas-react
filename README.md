@@ -21,4 +21,4 @@ Aplikasi ini dibuat ketika saya masih dalam masa pembelajaran
 
 - Frontend: React,Style-component
 - Backend: Express
-- Basis Data: MariaDB
+- Basis Data: PostgreSQL
