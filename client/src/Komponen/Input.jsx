@@ -22,7 +22,7 @@ const StyledInput = styled.input`
     border-radius: 2rem;
   }
   &::placeholder {
-    color: #b9abe099;
+    color: #AE445A;
     font-weight: 100;
     font-size: 1rem;
   }

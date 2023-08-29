@@ -11,6 +11,7 @@ import Detail from './Komponen/Detail.jsx';
 import Regist from './pages/Regist.jsx';
 import EditPrd from './pages/EditPrd.jsx';
 import EditGroup from './pages/EditGroup.jsx';
+import Payment from './pages/payment.jsx';
 
 const router = createBrowserRouter([
   {
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
       {
         path: "/product/edit/:id",
         element: <EditPrd/>,
+      },
+      {
+        path: "/pay",
+        element: <Payment/>,
       },
     ],
   },

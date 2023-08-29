@@ -75,7 +75,7 @@ export default function Home() {
   <>
   
     <div className="w-full fixed font-extrabold text-3xl flex flex-row justify-center gap-x-96 mb-8 bg-gray-800">
-    <div className="grid grid-col place-items-center ">
+    <div className="grid grid-col place-items-center mt-4">
     <header className="flex items-center justify-between bg-rose-200 rounded-2xl gap-6 px-5 py-1">
             <label className="flex flex-col gap-2 text-sm">
           Cari:
@@ -90,8 +90,8 @@ export default function Home() {
     <p className=""><FaRegHandPointDown/></p>
     </header>
 
-    <div>
-    <button onClick={()=> setShowAdd(true)} className="inline-block no-underline py-1 px-2 rounded bg-purple-400 text-pink-800 items-center justify-center">Tambah</button>
+    <div className="my-4">
+    <button onClick={()=> setShowAdd(true)} className="inline-block no-underline py-1 px-2 rounded   items-center justify-center">Tambah</button>
     </div>
     </div>
     </div>

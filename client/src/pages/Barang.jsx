@@ -22,6 +22,7 @@ export default function Barang(){
     const [cart, setCart] = useState([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [showAdd, setShowAdd]= useState(false);
+    const [check, setCheck]= useState(false);
     const [keyword, setKeyword] = useState("");
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(Infinity);
@@ -30,10 +31,9 @@ export default function Barang(){
     const [sortOrder, setSortOrder] = useState("asc");
     const [page, setPage] = useState(1);
     const [productsPerPage, setProductsPerPage] = useState(10);
+    const [paymentStatus, setPaymentStatus] = useState(null);
+
     const akun = useOutletContext()[0];
-
-
-    
 
     useEffect(() => {
         api("/product").then((product) => setProd(product));
@@ -55,6 +55,14 @@ export default function Barang(){
         product.harga <= maxPrice &&
         (category === "Semua" || product.kategori == category)
     );
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      setPaymentStatus("processing");
+      setTimeout(() => {
+        setPaymentStatus("success");
+      }, 2000);
+    };
+  
     return(
        <div className=" pt-5"> 
         <header className="flex items-center justify-between bg-rose-200 rounded-2xl gap-6 px-5 py-1">
@@ -193,11 +201,11 @@ export default function Barang(){
                 maximumFractionDigits: 0,
               })}
           </div>
-          <TomatoButton>Checkout</TomatoButton>
+         
+            <Link to={"/pay"}>Checkout</Link>
         </div>
       )} 
-    {/* </div> */}
-   
+
         <section className="py-16">
                 <div className="continer mx-auto">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  
@@ -385,7 +393,6 @@ export default function Barang(){
         }
       />
 
-        
         <div style={{ display: "flex", justifyContent: "space-between" }}>
             <TomatoButton onClick={()=>setShowAdd(false)}>
               Batal

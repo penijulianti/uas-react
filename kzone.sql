@@ -1,29 +1,29 @@
-CREATE DATABASE postgres;
-USE DATABASE postgres;
+CREATE DATABASE kzone;
+USE kzone;
 CREATE TABLE akun(
-    id INT auto-increment PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     nama VARCHAR(150),
     email VARCHAR(150),
-    password VARCHAR(150)
+    PASSWORD VARCHAR(150)
 );
 CREATE TABLE anggota(
-    id int auto-increment PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     nama VARCHAR(150),
     agensi VARCHAR(150),
-    gambar text
+    gambar TEXT
 );CREATE TABLE barang(
-    id int auto-increment PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     nama VARCHAR(150),
     band VARCHAR(150),
-    gambar text,
+    gambar TEXT,
     harga VARCHAR(150),
     kategori VARCHAR(150)
 );CREATE TABLE musik(
-    id INT auto-increment PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     artis VARCHAR(150),
     gambar VARCHAR(150),
     judul VARCHAR(150),
     musik VARCHAR(150),
     kode INT,
-    CONSTRAINT kodetamu FOREIGN KEY (id) REFERENCES anggota (id)
+    CONSTRAINT kodetamu FOREIGN KEY (kode) REFERENCES anggota (id)
 );

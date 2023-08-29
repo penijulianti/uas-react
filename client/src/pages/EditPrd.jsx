@@ -6,6 +6,9 @@ import { api } from "../utils";
 import { useOutletContext } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import {MdClose} from "react-icons/md"
+
 
 
 export default function EditGroup(){
@@ -13,6 +16,7 @@ export default function EditGroup(){
   const { id } = useParams();
   const akun = useOutletContext()[0];
   const navigate = useNavigate();
+
 
 
   useEffect(() => {
@@ -24,6 +28,7 @@ if(akun){
     <main>
       {editProduct ? (
  <div className="flex flex-col gap-4 items-center h-full pt-60">
+
  <form
           className="dialog"
           onSubmit={async (e) => {
@@ -32,7 +37,8 @@ if(akun){
             alert(message);
             <Navigate to="/"/>
           }}
-        >
+        >               
+
           <h1>{editProduct.id ? "Edit" : "Buat"} Produk</h1>
           <h1  className="text-center text-xl">Edit Produk</h1>
             <TextField label="Nama" helperText="Masukkan Nama Boyband/Girlband" 
@@ -86,12 +92,10 @@ if(akun){
 
         
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-            {/* <TomatoButton
-              type="reset"
-            >
-              Batal
-            </TomatoButton> */}
-            <TomatoButton type="submit">Simpan</TomatoButton>
+                  <Link to={`/shop`}>
+                    <TomatoButton>Batal</TomatoButton>                    
+                    </Link>
+                    <TomatoButton type="submit">Simpan</TomatoButton>
           </div>       
           </form>
         </div>
