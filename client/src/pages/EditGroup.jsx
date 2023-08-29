@@ -87,8 +87,7 @@ export default function EditGroup(){
   } else{
     return <Navigate to="/log"/>
   }
-// </>
-    
+
 }
 const Button = styled.button`
   color: #BF4F74;

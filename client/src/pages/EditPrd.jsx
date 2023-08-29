@@ -7,9 +7,6 @@ import { useOutletContext } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import {MdClose} from "react-icons/md"
-
-
 
 export default function EditGroup(){
     const [editProduct, seteditProduct] = useState();
@@ -90,7 +87,6 @@ if(akun){
         }
       />
 
-        
         <div style={{ display: "flex", justifyContent: "space-between" }}>
                   <Link to={`/shop`}>
                     <TomatoButton>Batal</TomatoButton>                    
@@ -103,7 +99,6 @@ if(akun){
         "Loading..."
       )}
 </main>
-// </>
     )
       }else{
         return <Navigate to="/log"/>
